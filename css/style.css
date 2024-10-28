@@ -1,0 +1,35 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+#wrapper {
+    display: flex;
+    height: 100vh;
+}
+
+#sidebar-wrapper {
+    width: 250px;
+    background-color: #007bff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    padding-top: 20px;
+}
+
+#page-content-wrapper {
+    margin-left: 250px;
+    height: 100vh;
+    width: 100%;
+    padding: 20px;
+}
+
+.sidebar-heading {
+    font-size: 1.5em;
+    color: white;
+    text-align: center;
+}
+
+.list-group-item {
+    margin-bottom: 10px;
+}

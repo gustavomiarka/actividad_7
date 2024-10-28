@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Turnos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Menú lateral -->
+        <div class="bg-primary border-right" id="sidebar-wrapper">
+            <div class="sidebar-heading"><span>Test123</span></div>
+            <div class="list-group list-group-flush">
+                <a href="#" class="list-group-item list-group-item-action bg-primary text-white" onclick="mostrarSeccion('dashboard')">Inicio</a>
+                <a href="#" class="list-group-item list-group-item-action bg-primary text-white" onclick="mostrarSeccion('consultar-turnos')">Consultar turnos</a>
+                <a href="#" class="list-group-item list-group-item-action bg-primary text-white" onclick="mostrarSeccion('nuevo-turno')">Nuevo turno</a>
+            </div>
+        </div>
+
+        <!-- Contenido principal -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <h1 class="mt-4">Dashboard</h1>
+
+                <!-- Sección Dashboard -->
+                <section id="dashboard" style="display: none; height: 100vh;">
+                    <h3>Total de turnos por cliente:</h3>
+                    <p>Permite contabilizar el total de turnos por cliente</p>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Total de turnos</th>
+                            </tr>
+                        </thead>
+                        <tbody id="turnos-por-cliente">
+                            <!-- Aquí se mostrarán los turnos por cliente -->
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Sección Consultar Turnos -->
+                <section id="consultar-turnos" style="display: none; height: 100vh;">
+                    <h3>Todos los turnos cargados</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-turnos">
+                            <!-- Aquí se cargarán los turnos desde el arreglo -->
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Sección Nuevo Turno -->
+                <section id="nuevo-turno" style="display: none; height: 100vh;">
+                    <h3>Cargar nuevo turno</h3>
+                    <form id="form-turno">
+                        <div class="form-group">
+                            <label for="id-turno">ID del Turno</label>
+                            <input type="text" class="form-control" id="id-turno" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha-turno">Fecha</label>
+                            <input type="date" class="form-control" id="fecha-turno" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="hora-turno">Hora</label>
+                            <input type="time" class="form-control" id="hora-turno" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cliente-turno">Cliente</label>
+                            <select class="form-control" id="cliente-turno" required>
+                                <option value="Cliente 1">Cliente 1</option>
+                                <option value="Cliente 2">Cliente 2</option>
+                                <option value="Cliente 3">Cliente 3</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cargar Turno</button>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+    <footer class="sticky-footer" style="background-color: #007bff;">
+        <div class="container my-auto">
+            <div class="copyright text-center my-auto">
+                <span>Copyright &copy; Your Website 2021</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Arreglo de turnos en memoria
+        let turnos = [
+            { id: 1, cliente: 'Cliente 1', fecha: '2024-10-01', hora: '10:00' },
+            { id: 2, cliente: 'Cliente 2', fecha: '2024-10-02', hora: '11:00' }
+        ];
+
+        // Mostrar secciones
+        function mostrarSeccion(seccionId) {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('consultar-turnos').style.display = 'none';
+            document.getElementById('nuevo-turno').style.display = 'none';
+            document.getElementById(seccionId).style.display = 'block';
+
+            if (seccionId === 'consultar-turnos') {
+                cargarTurnos();
+            } else if (seccionId === 'dashboard') {
+                mostrarTurnosPorCliente();
+            }
+        }
+
+        // Cargar turnos en la tabla
+        function cargarTurnos() {
+            const tablaTurnos = document.getElementById('tabla-turnos');
+            tablaTurnos.innerHTML = ''; // Limpiar tabla
+            turnos.forEach(turno => {
+                const fila = `<tr>
+                                <td>${turno.id}</td>
+                                <td>${turno.cliente}</td>
+                                <td>${turno.fecha}</td>
+                                <td>${turno.hora}</td>
+                              </tr>`;
+                tablaTurnos.innerHTML += fila;
+            });
+        }
+
+        // Mostrar turnos por cliente
+        function mostrarTurnosPorCliente() {
+            const turnosPorCliente = document.getElementById('turnos-por-cliente');
+            turnosPorCliente.innerHTML = ''; // Limpiar tabla
+            let clienteCount = {};
+            turnos.forEach(turno => {
+                clienteCount[turno.cliente] = (clienteCount[turno.cliente] || 0) + 1;
+            });
+
+            for (const cliente in clienteCount) {
+                const fila = `<tr>
+                                <td>${cliente}</td>
+                                <td>${clienteCount[cliente]}</td>
+                              </tr>`;
+                turnosPorCliente.innerHTML += fila;
+            }
+        }
+
+        // Manejar la carga de un nuevo turno
+        document.getElementById('form-turno').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = document.getElementById('id-turno').value;
+            const fecha = document.getElementById('fecha-turno').value;
+            const hora = document.getElementById('hora-turno').value;
+            const cliente = document.getElementById('cliente-turno').value;
+
+            if (id && fecha && hora && cliente) {
+                turnos.push({ id, cliente, fecha, hora });
+                alert('Turno registrado correctamente');
+                mostrarSeccion('consultar-turnos');
+            } else {
+                alert('Por favor, complete todos los campos.');
+            }
+        });
+
+        // Mostrar la sección del dashboard al cargar la página
+        window.onload = function() {
+            mostrarSeccion('dashboard');
+        }
+    </script>
+</body>
+</html>
